@@ -1,0 +1,16 @@
+{% macro render_node(node) %}
+<li>{{ node['email'] }}</li>
+{% if node['nodes'] %}
+<ul>
+    {% for child in node['nodes'] %}
+    {{ render_node(child) | safe }}
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
+<ul>
+    {% for item in data %}
+    {{ render_node(item) | safe }}
+    {% endfor %}
+</ul>
