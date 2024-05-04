@@ -16,5 +16,5 @@ with app.app_context():
             email=data["email"], name=data["name"], points=data["points"]
         )
         db.session.add(point_entry)
-
+    print("Tables created successfully")
     db.session.commit()

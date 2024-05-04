@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from models import PointTable
 from models import db
 import csv
+import sqlite3
 import os
 
 app = Flask(
@@ -12,7 +13,8 @@ app = Flask(
     static_folder=os.path.join(os.path.abspath(os.path.dirname(__file__)), "static"),
 )
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/alphamaster"
+# app.config["SQLALCHEMY_DATABASE_URI"] = "mysql://root:@localhost/alphamaster"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///alphamaster.db"  # sqlite db
 
 db.init_app(app)
 
@@ -22,6 +24,20 @@ sorted_items = []
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+def get_db_connection():
+    conn = sqlite3.connect("alphamaster.db")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+@app.route("/posts")
+def post():
+    conn = get_db_connection()
+    posts = conn.execute("SELECT * FROM posts").fetchall()
+    conn.close()
+    return render_template("posts.html", posts=posts)
 
 
 def serialize_data(data):
